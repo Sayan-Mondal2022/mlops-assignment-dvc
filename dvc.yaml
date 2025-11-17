@@ -1,0 +1,39 @@
+stages:
+  preprocess:
+    cmd: python src/data_preprocessing.py
+    deps:
+      - src/data_preprocessing.py
+      - data/raw/raw.csv
+    params:
+      - data
+      - preprocessing
+    outs:
+      - data/processed/processed_data.pkl
+      - models/label_encoder.pkl
+      - models/scaler.pkl
+
+  train:
+    cmd: python src/training.py
+    deps:
+      - src/training.py
+      - data/processed/processed_data.pkl
+    params:
+      - data
+      - model
+    metrics:
+      - metrics.json:
+          cache: false
+    outs:
+      - models/${model.name}_model.pkl
+
+  evaluate:
+    cmd: python src/evaluation.py
+    deps:
+      - src/evaluation.py
+      - models/${model.name}_model.pkl
+    metrics:
+      - metrics/evaluation_metrics.json:
+          cache: false
+    plots:
+      - metrics/plots:
+          cache: false

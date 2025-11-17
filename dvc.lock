@@ -1,0 +1,121 @@
+schema: '2.0'
+stages:
+  preprocess:
+    cmd: python src/data_preprocessing.py
+    deps:
+    - path: data/raw/raw.csv
+      hash: md5
+      md5: 448de498a9f801b2a2f00c733ae192f5
+      size: 310056916
+    - path: src/data_preprocessing.py
+      hash: md5
+      md5: 54eb036eccafcb360abfe7a103cdc605
+      size: 3395
+    params:
+      params.yaml:
+        data:
+          raw_path: data/raw/raw.csv
+          processed_path: data/processed/raw_processed.csv
+          features:
+          - cpu_request
+          - mem_request
+          - cpu_limit
+          - mem_limit
+          - runtime_minutes
+          - controller_kind
+          target: cpu_usage
+        preprocessing:
+          test_size: 0.2
+          random_state: 42
+          categorical_columns:
+          - controller_kind
+    outs:
+    - path: data/processed/processed_data.pkl
+      hash: md5
+      md5: 41dec89dd1c056a1043d3a4f9e9b95a4
+      size: 15906655
+    - path: models/label_encoder.pkl
+      hash: md5
+      md5: d7d2db561f29d2326035862459663e00
+      size: 485
+    - path: models/scaler.pkl
+      hash: md5
+      md5: ce1ad19a371407607cc6d13d702d0762
+      size: 1039
+  train:
+    cmd: python src/training.py
+    deps:
+    - path: data/processed/processed_data.pkl
+      hash: md5
+      md5: 41dec89dd1c056a1043d3a4f9e9b95a4
+      size: 15906655
+    - path: src/training.py
+      hash: md5
+      md5: 13541d6a4665ad17373e0309517fd559
+      size: 4215
+    params:
+      params.yaml:
+        data:
+          raw_path: data/raw/raw.csv
+          processed_path: data/processed/raw_processed.csv
+          features:
+          - cpu_request
+          - mem_request
+          - cpu_limit
+          - mem_limit
+          - runtime_minutes
+          - controller_kind
+          target: cpu_usage
+        model:
+          name: xgboost
+          xgboost:
+            n_estimators: 100
+            max_depth: 6
+            learning_rate: 0.1
+            subsample: 0.8
+            colsample_bytree: 0.8
+            random_state: 42
+          lightgbm:
+            n_estimators: 100
+            max_depth: 8
+            learning_rate: 0.05
+            num_leaves: 31
+            subsample: 0.8
+            colsample_bytree: 0.8
+            random_state: 42
+          random_forest:
+            n_estimators: 100
+            max_depth: 15
+            min_samples_split: 2
+            min_samples_leaf: 1
+            random_state: 42
+    outs:
+    - path: metrics.json
+      hash: md5
+      md5: d9628c9ffb88df6569c0f73ce7ee82be
+      size: 232
+    - path: models/xgboost_model.pkl
+      hash: md5
+      md5: c5c8c1daaba2a4b156d0ab0f1f5e2816
+      size: 375404
+  evaluate:
+    cmd: python src/evaluation.py
+    deps:
+    - path: models/xgboost_model.pkl
+      hash: md5
+      md5: c5c8c1daaba2a4b156d0ab0f1f5e2816
+      size: 375404
+    - path: src/evaluation.py
+      hash: md5
+      md5: 469961f96946add84fd3dfd02dd5ae22
+      size: 3119
+    outs:
+    - path: metrics/evaluation_metrics.json
+      hash: md5
+      md5: d9db811b02cd618dd4de9e2c31670250
+      size: 131
+    - path: metrics/plots
+      hash: md5
+      md5: caa913d86ae1b393cb9f786517e59956.dir
+      size: 95910
+      nfiles: 3
