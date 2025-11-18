@@ -67,7 +67,6 @@ stages:
           raw_path: data/raw/raw.csv
           target: cpu_usage
         model:
-          name: lightgbm
           lightgbm:
             colsample_bytree: 0.8
             learning_rate: 0.05
@@ -76,6 +75,7 @@ stages:
             num_leaves: 31
             random_state: 42
             subsample: 0.8
+          name: random_forest
           random_forest:
             max_depth: 15
             min_samples_leaf: 1
@@ -90,32 +90,32 @@ stages:
             random_state: 42
             subsample: 0.8
     outs:
-    - path: metrics/training/lightgbm_metrics.json
+    - path: metrics/training/random_forest_metrics.json
       hash: md5
-      md5: 3e9741e827e728e844337275b5c3c1fa
-      size: 474
-    - path: models/lightgbm_model.pkl
+      md5: f0d88714b942bc53589e64b86cb99846
+      size: 429
+    - path: models/random_forest_model.pkl
       hash: md5
-      md5: 5f6993b5144ce2b53b0fea9f3c52213c
-      size: 313136
+      md5: d57b85ceeb087fe97b833a75f289e083
+      size: 75463057
   evaluate:
     cmd: python src/evaluation.py
     deps:
-    - path: models/lightgbm_model.pkl
+    - path: models/random_forest_model.pkl
       hash: md5
-      md5: 5f6993b5144ce2b53b0fea9f3c52213c
-      size: 313136
+      md5: d57b85ceeb087fe97b833a75f289e083
+      size: 75463057
     - path: src/evaluation.py
       hash: md5
       md5: b8836e69e8be2def010ab49e9de83d6c
       size: 10419
     outs:
-    - path: metrics/evaluation/lightgbm_evaluation.json
+    - path: metrics/evaluation/random_forest_evaluation.json
       hash: md5
-      md5: 80e2422f30b6255d874db222201cd154
-      size: 154
-    - path: metrics/plots/lightgbm
+      md5: c24a82fa96ba1a4c78ff96b197d06a6b
+      size: 160
+    - path: metrics/plots/random_forest
       hash: md5
-      md5: 5506c039da42dd715e67355d570dc297.dir
-      size: 602887
+      md5: 51762ec54307289b0576fc88f16275ce.dir
+      size: 676169
       nfiles: 4

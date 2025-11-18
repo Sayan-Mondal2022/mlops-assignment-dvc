@@ -18,7 +18,7 @@ model:
     num_leaves: 31
     random_state: 42
     subsample: 0.8
-  name: lightgbm
+  name: random_forest
   random_forest:
     max_depth: 15
     min_samples_leaf: 1
