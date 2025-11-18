@@ -56,8 +56,6 @@ stages:
     params:
       params.yaml:
         data:
-          raw_path: data/raw/raw.csv
-          processed_path: data/processed/raw_processed.csv
           features:
           - cpu_request
           - mem_request
@@ -65,57 +63,59 @@ stages:
           - mem_limit
           - runtime_minutes
           - controller_kind
+          processed_path: data/processed/raw_processed.csv
+          raw_path: data/raw/raw.csv
           target: cpu_usage
         model:
-          name: xgboost
-          xgboost:
-            n_estimators: 100
-            max_depth: 6
-            learning_rate: 0.1
-            subsample: 0.8
-            colsample_bytree: 0.8
-            random_state: 42
+          name: lightgbm
           lightgbm:
-            n_estimators: 100
-            max_depth: 8
-            learning_rate: 0.05
-            num_leaves: 31
-            subsample: 0.8
             colsample_bytree: 0.8
-            random_state: 42
-          random_forest:
+            learning_rate: 0.05
+            max_depth: 8
             n_estimators: 100
-            max_depth: 15
-            min_samples_split: 2
-            min_samples_leaf: 1
+            num_leaves: 31
             random_state: 42
+            subsample: 0.8
+          random_forest:
+            max_depth: 15
+            min_samples_leaf: 1
+            min_samples_split: 2
+            n_estimators: 100
+            random_state: 42
+          xgboost:
+            colsample_bytree: 0.8
+            learning_rate: 0.1
+            max_depth: 6
+            n_estimators: 100
+            random_state: 42
+            subsample: 0.8
     outs:
-    - path: metrics/training/xgboost_metrics.json
+    - path: metrics/training/lightgbm_metrics.json
       hash: md5
-      md5: 76db5ce3fefcc8d360693a4cc35e1285
-      size: 448
-    - path: models/xgboost_model.pkl
+      md5: 3e9741e827e728e844337275b5c3c1fa
+      size: 474
+    - path: models/lightgbm_model.pkl
       hash: md5
-      md5: c5c8c1daaba2a4b156d0ab0f1f5e2816
-      size: 375404
+      md5: 5f6993b5144ce2b53b0fea9f3c52213c
+      size: 313136
   evaluate:
     cmd: python src/evaluation.py
     deps:
-    - path: models/xgboost_model.pkl
+    - path: models/lightgbm_model.pkl
       hash: md5
-      md5: c5c8c1daaba2a4b156d0ab0f1f5e2816
-      size: 375404
+      md5: 5f6993b5144ce2b53b0fea9f3c52213c
+      size: 313136
     - path: src/evaluation.py
       hash: md5
       md5: b8836e69e8be2def010ab49e9de83d6c
       size: 10419
     outs:
-    - path: metrics/evaluation/xgboost_evaluation.json
+    - path: metrics/evaluation/lightgbm_evaluation.json
       hash: md5
-      md5: 3ed5c1fba9e77877c4ea5ac95e68b479
+      md5: 80e2422f30b6255d874db222201cd154
       size: 154
-    - path: metrics/plots/xgboost
+    - path: metrics/plots/lightgbm
       hash: md5
-      md5: 40b5acf4dbd1cc12dcdce35bc79818f0.dir
-      size: 604618
+      md5: 5506c039da42dd715e67355d570dc297.dir
+      size: 602887
       nfiles: 4
