@@ -51,8 +51,8 @@ stages:
       size: 15906655
     - path: src/training.py
       hash: md5
-      md5: 13541d6a4665ad17373e0309517fd559
-      size: 4215
+      md5: 0f33d25181f45a6cbed951fc6b147fb3
+      size: 4932
     params:
       params.yaml:
         data:
@@ -90,10 +90,10 @@ stages:
             min_samples_leaf: 1
             random_state: 42
     outs:
-    - path: metrics.json
+    - path: metrics/training/xgboost_metrics.json
       hash: md5
-      md5: d9628c9ffb88df6569c0f73ce7ee82be
-      size: 232
+      md5: 76db5ce3fefcc8d360693a4cc35e1285
+      size: 448
     - path: models/xgboost_model.pkl
       hash: md5
       md5: c5c8c1daaba2a4b156d0ab0f1f5e2816
@@ -107,15 +107,15 @@ stages:
       size: 375404
     - path: src/evaluation.py
       hash: md5
-      md5: 469961f96946add84fd3dfd02dd5ae22
-      size: 3119
+      md5: b8836e69e8be2def010ab49e9de83d6c
+      size: 10419
     outs:
-    - path: metrics/evaluation_metrics.json
+    - path: metrics/evaluation/xgboost_evaluation.json
       hash: md5
-      md5: d9db811b02cd618dd4de9e2c31670250
-      size: 131
-    - path: metrics/plots
+      md5: 3ed5c1fba9e77877c4ea5ac95e68b479
+      size: 154
+    - path: metrics/plots/xgboost
       hash: md5
-      md5: caa913d86ae1b393cb9f786517e59956.dir
-      size: 95910
-      nfiles: 3
+      md5: 40b5acf4dbd1cc12dcdce35bc79818f0.dir
+      size: 604618
+      nfiles: 4

@@ -8,6 +8,7 @@ import yaml
 import joblib
 import json
 import time
+import os
 
 def load_config():
     with open('params.yaml', 'r') as f:
@@ -34,21 +35,6 @@ def get_model(model_name, config):
     else:
         raise ValueError(f"Unknown model: {model_name}")
 
-def convert_numpy_types(obj):
-    """Convert numpy types to Python native types for JSON serialization"""
-    if isinstance(obj, (np.float32, np.float64)):
-        return float(obj)
-    elif isinstance(obj, (np.int32, np.int64)):
-        return int(obj)
-    elif isinstance(obj, np.ndarray):
-        return obj.tolist()
-    elif isinstance(obj, dict):
-        return {key: convert_numpy_types(value) for key, value in obj.items()}
-    elif isinstance(obj, list):
-        return [convert_numpy_types(item) for item in obj]
-    else:
-        return obj
-
 def train_model():
     config = load_config()
     processed_data = load_processed_data()
@@ -72,18 +58,18 @@ def train_model():
     # Make predictions
     y_pred = model.predict(X_test)
     
-    # Calculate metrics - convert to Python native types
+    # Calculate metrics
     mae = float(mean_absolute_error(y_test, y_pred))
     mse = float(mean_squared_error(y_test, y_pred))
     rmse = float(np.sqrt(mse))
     r2 = float(r2_score(y_test, y_pred))
     
-    # Handle MAPE calculation carefully to avoid division by zero
+    # Handle MAPE calculation
     with np.errstate(divide='ignore', invalid='ignore'):
         mape = np.mean(np.abs((y_test - y_pred) / np.where(y_test != 0, y_test, 1))) * 100
     mape = float(mape)
     
-    # Save metrics
+    # Save metrics - ONLY for the current model (as per dvc.yaml)
     metrics = {
         'model': model_name,
         'training_time_seconds': float(training_time),
@@ -91,27 +77,51 @@ def train_model():
         'mse': mse,
         'rmse': rmse,
         'r2': r2,
-        'mape': mape
+        'mape': mape,
+        'parameters': config['model'][model_name]
     }
     
-    # Ensure metrics directory exists
-    import os
-    os.makedirs('metrics', exist_ok=True)
+    # Save model-specific metrics (as per dvc.yaml: metrics/training/${model.name}_metrics.json)
+    os.makedirs('metrics/training', exist_ok=True)
+    metrics_file = f'metrics/training/{model_name}_metrics.json'
     
-    with open('metrics.json', 'w') as f:
-        json.dump(metrics, f, indent=2)
+    # Load existing metrics if file exists, otherwise create new
+    if os.path.exists(metrics_file):
+        with open(metrics_file, 'r') as f:
+            try:
+                existing_metrics = json.load(f)
+                # If it's a list, append; if single dict, convert to list
+                if isinstance(existing_metrics, list):
+                    existing_metrics.append(metrics)
+                    all_metrics = existing_metrics
+                else:
+                    all_metrics = [existing_metrics, metrics]
+            except json.JSONDecodeError:
+                all_metrics = [metrics]
+    else:
+        all_metrics = [metrics]
     
-    # Save model
+    # Keep only last 5 runs to avoid file getting too large
+    if len(all_metrics) > 5:
+        all_metrics = all_metrics[-5:]
+    
+    # Save updated metrics
+    with open(metrics_file, 'w') as f:
+        json.dump(all_metrics, f, indent=2)
+    
+    # Save model - ONLY the current model (as per dvc.yaml: models/${model.name}_model.pkl)
     os.makedirs('models', exist_ok=True)
-    joblib.dump(model, f'models/{model_name}_model.pkl')
+    model_filename = f'models/{model_name}_model.pkl'
+    joblib.dump(model, model_filename)
     
-    # Feature importance with type conversion
+    # Feature importance - save with model name
     if hasattr(model, 'feature_importances_'):
         feature_importance = {}
         for feature, importance in zip(X_train.columns, model.feature_importances_):
-            feature_importance[feature] = float(importance)  # Convert to Python float
+            feature_importance[feature] = float(importance)
         
-        with open('metrics/feature_importance.json', 'w') as f:
+        os.makedirs('metrics/feature_importance', exist_ok=True)
+        with open(f'metrics/feature_importance/{model_name}_feature_importance.json', 'w') as f:
             json.dump(feature_importance, f, indent=2)
         
         print("📊 Feature Importance:")
@@ -121,6 +131,8 @@ def train_model():
     print(f"✅ {model_name.upper()} trained successfully!")
     print(f"📊 Metrics: R²={r2:.4f}, RMSE={rmse:.4f}, MAE={mae:.4f}, MAPE={mape:.2f}%")
     print(f"⏱️  Training time: {training_time:.2f} seconds")
+    print(f"💾 Model saved: {model_filename}")
+    print(f"📈 Metrics saved: {metrics_file}")
     
     return model, metrics
 

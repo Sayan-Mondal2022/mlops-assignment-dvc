@@ -9,8 +9,6 @@ stages:
       - preprocessing
     outs:
       - data/processed/processed_data.pkl
-      - models/label_encoder.pkl
-      - models/scaler.pkl
 
   train:
     cmd: python src/training.py
@@ -21,7 +19,7 @@ stages:
       - data
       - model
     metrics:
-      - metrics.json:
+      - metrics/training/${model.name}_metrics.json:
           cache: false
     outs:
       - models/${model.name}_model.pkl
@@ -32,8 +30,8 @@ stages:
       - src/evaluation.py
       - models/${model.name}_model.pkl
     metrics:
-      - metrics/evaluation_metrics.json:
+      - metrics/evaluation/${model.name}_evaluation.json:
           cache: false
     plots:
-      - metrics/plots:
+      - metrics/plots/${model.name}:
           cache: false
