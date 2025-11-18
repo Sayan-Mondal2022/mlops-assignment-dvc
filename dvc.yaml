@@ -35,3 +35,16 @@ stages:
     plots:
       - metrics/plots/${model.name}:
           cache: false
+
+  save_comparison:
+    cmd: python src/save_comparison.py
+    deps:
+      - src/save_comparison.py
+      - metrics/evaluation/xgboost_evaluation.json
+      - metrics/evaluation/lightgbm_evaluation.json
+      - metrics/evaluation/random_forest_evaluation.json
+    metrics:
+      - metrics/comparison/final_model_comparison.json:
+          cache: false
+      - metrics/comparison/final_model_comparison.csv:
+          cache: false

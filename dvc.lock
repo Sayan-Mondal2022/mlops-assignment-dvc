@@ -34,14 +34,6 @@ stages:
       hash: md5
       md5: 41dec89dd1c056a1043d3a4f9e9b95a4
       size: 15906655
-    - path: models/label_encoder.pkl
-      hash: md5
-      md5: d7d2db561f29d2326035862459663e00
-      size: 485
-    - path: models/scaler.pkl
-      hash: md5
-      md5: ce1ad19a371407607cc6d13d702d0762
-      size: 1039
   train:
     cmd: python src/training.py
     deps:
@@ -119,3 +111,31 @@ stages:
       md5: 51762ec54307289b0576fc88f16275ce.dir
       size: 676169
       nfiles: 4
+  save_comparison:
+    cmd: python src/save_comparison.py
+    deps:
+    - path: metrics/evaluation/lightgbm_evaluation.json
+      hash: md5
+      md5: 80e2422f30b6255d874db222201cd154
+      size: 154
+    - path: metrics/evaluation/random_forest_evaluation.json
+      hash: md5
+      md5: c24a82fa96ba1a4c78ff96b197d06a6b
+      size: 160
+    - path: metrics/evaluation/xgboost_evaluation.json
+      hash: md5
+      md5: 3ed5c1fba9e77877c4ea5ac95e68b479
+      size: 154
+    - path: src/save_comparison.py
+      hash: md5
+      md5: fcf42d9d7182b91d14cc649f736aad62
+      size: 2345
+    outs:
+    - path: metrics/comparison/final_model_comparison.csv
+      hash: md5
+      md5: dcd8222720559e5b33f67ef31a68bf9e
+      size: 340
+    - path: metrics/comparison/final_model_comparison.json
+      hash: md5
+      md5: d2ffee26a67ca2fba1dba6ed384bb2fa
+      size: 1456
