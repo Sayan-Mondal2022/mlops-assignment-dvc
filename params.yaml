@@ -16,7 +16,7 @@ preprocessing:
   categorical_columns: ["controller_kind"]
   
 model:
-  name: "lightgbm"
+  name: "xgboost"
   
   xgboost:
     n_estimators: 100

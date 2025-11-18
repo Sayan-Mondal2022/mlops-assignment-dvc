@@ -1,0 +1,20 @@
+[
+  {
+    "model": "lightgbm",
+    "training_time_seconds": 2.932499885559082,
+    "mae": 0.005105096070190767,
+    "mse": 0.0003335244666662244,
+    "rmse": 0.018262652235264853,
+    "r2": 0.8593409857759898,
+    "mape": 3226.1577668477303,
+    "parameters": {
+      "colsample_bytree": 0.8,
+      "learning_rate": 0.05,
+      "max_depth": 8,
+      "n_estimators": 100,
+      "num_leaves": 31,
+      "random_state": 42,
+      "subsample": 0.8
+    }
+  }
+]

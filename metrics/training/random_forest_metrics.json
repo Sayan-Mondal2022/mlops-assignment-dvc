@@ -1,0 +1,18 @@
+[
+  {
+    "model": "random_forest",
+    "training_time_seconds": 44.22024393081665,
+    "mae": 0.002863748741993775,
+    "mse": 0.00016816449402980496,
+    "rmse": 0.012967825339269688,
+    "r2": 0.9290791101650019,
+    "mape": 1787.075271953933,
+    "parameters": {
+      "max_depth": 15,
+      "min_samples_leaf": 1,
+      "min_samples_split": 2,
+      "n_estimators": 100,
+      "random_state": 42
+    }
+  }
+]

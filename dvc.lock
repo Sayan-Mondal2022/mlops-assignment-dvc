@@ -59,7 +59,7 @@ stages:
           - controller_kind
           target: cpu_usage
         model:
-          name: lightgbm
+          name: xgboost
           xgboost:
             n_estimators: 100
             max_depth: 6
@@ -82,34 +82,34 @@ stages:
             min_samples_leaf: 1
             random_state: 42
     outs:
-    - path: metrics/training/lightgbm_metrics.json
+    - path: metrics/training/xgboost_metrics.json
       hash: md5
-      md5: 3e9741e827e728e844337275b5c3c1fa
-      size: 474
-    - path: models/lightgbm_model.pkl
+      md5: 76db5ce3fefcc8d360693a4cc35e1285
+      size: 448
+    - path: models/xgboost_model.pkl
       hash: md5
-      md5: 5f6993b5144ce2b53b0fea9f3c52213c
-      size: 313136
+      md5: c5c8c1daaba2a4b156d0ab0f1f5e2816
+      size: 375404
   evaluate:
     cmd: python src/evaluation.py
     deps:
-    - path: models/lightgbm_model.pkl
+    - path: models/xgboost_model.pkl
       hash: md5
-      md5: 5f6993b5144ce2b53b0fea9f3c52213c
-      size: 313136
+      md5: c5c8c1daaba2a4b156d0ab0f1f5e2816
+      size: 375404
     - path: src/evaluation.py
       hash: md5
       md5: b8836e69e8be2def010ab49e9de83d6c
       size: 10419
     outs:
-    - path: metrics/evaluation/lightgbm_evaluation.json
+    - path: metrics/evaluation/xgboost_evaluation.json
       hash: md5
-      md5: 80e2422f30b6255d874db222201cd154
+      md5: 3ed5c1fba9e77877c4ea5ac95e68b479
       size: 154
-    - path: metrics/plots/lightgbm
+    - path: metrics/plots/xgboost
       hash: md5
-      md5: 5506c039da42dd715e67355d570dc297.dir
-      size: 602887
+      md5: 40b5acf4dbd1cc12dcdce35bc79818f0.dir
+      size: 604618
       nfiles: 4
   save_comparison:
     cmd: python src/save_comparison.py
