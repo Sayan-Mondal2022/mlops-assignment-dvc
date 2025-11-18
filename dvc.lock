@@ -48,6 +48,8 @@ stages:
     params:
       params.yaml:
         data:
+          raw_path: data/raw/raw.csv
+          processed_path: data/processed/raw_processed.csv
           features:
           - cpu_request
           - mem_request
@@ -55,61 +57,59 @@ stages:
           - mem_limit
           - runtime_minutes
           - controller_kind
-          processed_path: data/processed/raw_processed.csv
-          raw_path: data/raw/raw.csv
           target: cpu_usage
         model:
-          lightgbm:
-            colsample_bytree: 0.8
-            learning_rate: 0.05
-            max_depth: 8
-            n_estimators: 100
-            num_leaves: 31
-            random_state: 42
-            subsample: 0.8
-          name: random_forest
-          random_forest:
-            max_depth: 15
-            min_samples_leaf: 1
-            min_samples_split: 2
-            n_estimators: 100
-            random_state: 42
+          name: xgboost
           xgboost:
-            colsample_bytree: 0.8
-            learning_rate: 0.1
-            max_depth: 6
             n_estimators: 100
-            random_state: 42
+            max_depth: 6
+            learning_rate: 0.1
             subsample: 0.8
+            colsample_bytree: 0.8
+            random_state: 42
+          lightgbm:
+            n_estimators: 100
+            max_depth: 8
+            learning_rate: 0.05
+            num_leaves: 31
+            subsample: 0.8
+            colsample_bytree: 0.8
+            random_state: 42
+          random_forest:
+            n_estimators: 100
+            max_depth: 15
+            min_samples_split: 2
+            min_samples_leaf: 1
+            random_state: 42
     outs:
-    - path: metrics/training/random_forest_metrics.json
+    - path: metrics/training/xgboost_metrics.json
       hash: md5
-      md5: f0d88714b942bc53589e64b86cb99846
-      size: 429
-    - path: models/random_forest_model.pkl
+      md5: 76db5ce3fefcc8d360693a4cc35e1285
+      size: 448
+    - path: models/xgboost_model.pkl
       hash: md5
-      md5: d57b85ceeb087fe97b833a75f289e083
-      size: 75463057
+      md5: c5c8c1daaba2a4b156d0ab0f1f5e2816
+      size: 375404
   evaluate:
     cmd: python src/evaluation.py
     deps:
-    - path: models/random_forest_model.pkl
+    - path: models/xgboost_model.pkl
       hash: md5
-      md5: d57b85ceeb087fe97b833a75f289e083
-      size: 75463057
+      md5: c5c8c1daaba2a4b156d0ab0f1f5e2816
+      size: 375404
     - path: src/evaluation.py
       hash: md5
       md5: b8836e69e8be2def010ab49e9de83d6c
       size: 10419
     outs:
-    - path: metrics/evaluation/random_forest_evaluation.json
+    - path: metrics/evaluation/xgboost_evaluation.json
       hash: md5
-      md5: c24a82fa96ba1a4c78ff96b197d06a6b
-      size: 160
-    - path: metrics/plots/random_forest
+      md5: 3ed5c1fba9e77877c4ea5ac95e68b479
+      size: 154
+    - path: metrics/plots/xgboost
       hash: md5
-      md5: 51762ec54307289b0576fc88f16275ce.dir
-      size: 676169
+      md5: 40b5acf4dbd1cc12dcdce35bc79818f0.dir
+      size: 604618
       nfiles: 4
   save_comparison:
     cmd: python src/save_comparison.py
