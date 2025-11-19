@@ -1,0 +1,8 @@
+{
+  "controller_kind": 0.0,
+  "mem_request": 0.04107134610450251,
+  "cpu_limit": 0.10414243507670691,
+  "cpu_request": 0.11479022681429314,
+  "mem_limit": 0.1775972733138983,
+  "runtime_minutes": 0.5623987186905992
+}

@@ -1,7 +1,7 @@
 [
   {
     "model": "random_forest",
-    "training_time_seconds": 44.22024393081665,
+    "training_time_seconds": 23.60179829597473,
     "mae": 0.002863748741993775,
     "mse": 0.00016816449402980496,
     "rmse": 0.012967825339269688,

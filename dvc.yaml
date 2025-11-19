@@ -9,6 +9,8 @@ stages:
       - preprocessing
     outs:
       - data/processed/processed_data.pkl
+      - models/scaler.pkl
+      - models/label_encoder.pkl
 
   train:
     cmd: python src/training.py
