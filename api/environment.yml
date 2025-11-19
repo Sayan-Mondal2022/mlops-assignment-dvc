@@ -1,0 +1,11 @@
+name: cpu-env
+dependencies:
+  - python=3.10
+  - pip:
+      - flask
+      - pandas
+      - numpy
+      - joblib
+      - scikit-learn
+      - xgboost
+      - lightgbm
