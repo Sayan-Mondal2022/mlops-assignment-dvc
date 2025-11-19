@@ -3,3 +3,5 @@ __pycache__/
 
 # Virtual Env
 .venv
+
+data/raw/raw.csv
