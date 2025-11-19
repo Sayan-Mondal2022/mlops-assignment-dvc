@@ -3,3 +3,4 @@ outs:
   size: 310056916
   hash: md5
   path: raw.csv
+  isexec: true
