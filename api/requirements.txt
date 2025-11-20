@@ -1,7 +1,5 @@
 flask
 flask-cors
-dvc
-dvc[azure]
 scikit-learn
 xgboost
 lightgbm
@@ -12,6 +10,7 @@ seaborn
 joblib
 scipy
 pillow
+python-dotenv
 
 # Azure SDK
 azure-storage-blob

@@ -13,28 +13,35 @@
 
         <form id="predictForm">
             <div class="input-group">
-                <label>CPU Request</label>
-                <input type="number" step="0.01" id="cpu_request" required>
+                <label>CPU Request (cores)</label>
+                <input type="number" step="0.01" id="cpu_request" value="1.0" required>
             </div>
 
             <div class="input-group">
                 <label>Memory Request (GB)</label>
-                <input type="number" step="0.01" id="mem_request" required>
+                <input type="number" step="0.01" id="mem_request" value="4.0" required>
             </div>
 
             <div class="input-group">
-                <label>CPU Limit</label>
-                <input type="number" step="0.01" id="cpu_limit" required>
+                <label>CPU Limit (cores)</label>
+                <input type="number" step="0.01" id="cpu_limit" value="2.0" required>
             </div>
 
             <div class="input-group">
                 <label>Memory Limit (GB)</label>
-                <input type="number" step="0.01" id="mem_limit" required>
+                <input type="number" step="0.01" id="mem_limit" value="8.0" required>
             </div>
 
             <div class="input-group">
-                <label>Runtime Minutes</label>
-                <input type="number" id="runtime_minutes" required>
+                <label>Runtime (minutes)</label>
+                <input type="number" id="runtime_minutes" value="60" required>
+            </div>
+
+            <div class="input-group">
+                <label>Controller Kind</label>
+                <select id="controller_kind" required>
+                    <option value="ReplicaSet">ReplicaSet</option>
+                </select>
             </div>
 
             <button type="submit">Predict</button>
