@@ -1,0 +1,17 @@
+flask
+flask-cors
+dvc
+dvc[azure]
+scikit-learn
+xgboost
+lightgbm
+pandas
+numpy
+matplotlib
+seaborn
+joblib
+scipy
+pillow
+
+# Azure SDK
+azure-storage-blob

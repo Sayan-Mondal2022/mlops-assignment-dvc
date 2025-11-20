@@ -1,0 +1,62 @@
+# -----------------------------------
+# 🛑 DO NOT COPY UNNECESSARY BIG FILES
+# -----------------------------------
+
+# Virtual environments
+.venv/
+venv/
+.env/
+
+# OS junk
+__pycache__/
+*.pyc
+*.pyo
+*.DS_Store
+
+
+# Local environment files (we pass these manually)
+.env
+
+# Logs and temp files
+*.log
+tmp/
+.cache/
+
+# -----------------------------------
+# 🚫 DO NOT COPY DATA / METRICS CREATED LOCALLY
+# DVC will pull these from Azure
+# -----------------------------------
+
+data/
+metrics/
+outputs/
+snapshots/
+aml_runs/
+
+# Ignore model binaries — DVC will fetch them
+models/*.pkl
+models/**/*.pkl
+
+# BUT allow tracking pointer files
+!models/*.dvc
+!models/**/*.dvc
+
+# Ignore DVC cache (very big)
+.dvc/cache/
+.dvc/tmp/
+
+# -----------------------------------
+# 🟢 CRITICAL — Allow required files INTO image
+# Do NOT remove these!
+# -----------------------------------
+
+!.git/  
+!api/
+!predictor.py
+!requirements.txt
+!dvc.yaml
+!dvc.lock
+!.dvc/
+!models/
+!metrics/
+!params.yaml
