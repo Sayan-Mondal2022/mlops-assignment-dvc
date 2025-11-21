@@ -117,3 +117,113 @@ mlops-assignment-dvc/
    ```
 
 Then open your browser to [`http://localhost:5000`](http://localhost:5000)
+
+## 📊 Models & Metrics
+
+### Model Overview
+
+The three models trained are as follows:
+
+- **LightGBM** – High-speed gradient boosting framework optimized for performance
+- **XGBoost Regressor** – Well-known distributed gradient boosting framework
+- **Random Forest Regressor** – Ensemble of decision trees for robust performance
+
+### 📈 Evaluation Metrics
+
+Model evaluation metrics are tracked via DVC and include:
+
+- **RMSE** (Root Mean Square Error)
+- **MAE** (Mean Absolute Error) 
+- **R²** (R-squared)
+- Additional classification metrics (accuracy, precision, recall, F1-score)
+
+## 🛠️ Why This Setup?
+
+- **Reproducibility**: DVC tracks data, models, metrics and ensures consistent pipeline runs.
+- **Modularity**: Separation of data, model training, evaluation, and deployment.
+- **Scalability**: Docker + Azure enable the solution to run in production-style environments.
+- **Learning Focus**: This project was designed to deepen understanding of the MLOps lifecycle.
+
+
+## 🟦 Deployment Steps (Azure ML + Azure Container Apps)
+Below is the general workflow followed to deploy the ML model using Azure ML, Docker, and Azure Container Apps.
+
+### Either run:
+```bash
+./deploy.sh
+```
+
+*else*
+
+### **1️⃣ Create Azure ML Workspace & Compute Instance**
+- Create a new **Azure Machine Learning Workspace**.
+- Inside the workspace, create a **Compute Instance (VM)**.
+- SSH or open terminal inside the compute instance to run all deployment commands.
+
+
+### **2️⃣ Build the Docker Image**
+From the project root, build the Docker image using the API’s Dockerfile:
+
+```bash
+docker build -t <image-name>:latest -f <api-folder>/Dockerfile .
+```
+
+### **3️⃣ Tag the Image for Azure Container Registry (ACR)**
+Tag the local Docker image so it can be pushed to your Azure Container Registry:
+
+```bash
+docker tag <image-name>:latest <acr-name>.azurecr.io/<image-name>:latest
+```
+
+### **4️⃣ Push the Image to ACR**
+Push the tagged image to the Azure Container Registry:
+
+```bash
+docker push <acr-name>.azurecr.io/<image-name>:latest
+```
+
+### **5️⃣ Update the Existing Azure Container App**
+Update the container app to use the newly pushed image:
+
+```bash
+az containerapp update \
+  --name <container-app-name> \
+  --resource-group <resource-group> \
+  --image "<acr-name>.azurecr.io/<image-name>:latest" \
+  --set-env-vars PORT=<port-number>
+```
+
+### **6️⃣ Restart the Container App Revision**
+Restart the active revision to apply changes:
+
+```bash
+az containerapp revision restart \
+  --name <container-app-name> \
+  --resource-group <resource-group> \
+  --revision <revision-name>
+```
+
+### **7️⃣ View Container Logs (Optional but Recommended)**
+To debug issues or verify successful startup:
+
+```bash
+az containerapp logs show \
+  --name <container-app-name> \
+  --resource-group <resource-group> \
+  --revision <revision-name> \
+  --follow
+```
+
+### **✔️ Deployment Complete**
+
+Your containerized ML application is now deployed and running on **Azure Container Apps**, pulling the image from **Azure Container Registry**.
+
+## 🙏 Acknowledgments
+
+I would like to express my sincere gratitude to everyone who contributed to the learning resources, documentation, and tools that made this project possible.  
+Special thanks to the Azure ML, DVC, Docker, and open-source communities for providing excellent platforms, guides, and examples that helped me understand the complete MLOps workflow.
+
+## 💙 Thank You
+
+Thank you for taking the time to explore this project.  
+This work was created purely for learning and hands-on experience, and I truly appreciate your interest and support.
