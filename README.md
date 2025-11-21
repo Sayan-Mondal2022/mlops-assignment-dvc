@@ -36,7 +36,7 @@ mlops-assignment-dvc/
 │
 ├── api/                         # Flask API for model inference
 │   ├── static/
-|   |   ├── script.js
+│   │   ├── scripts.js
 │   │   └── style.css
 │   ├── templates/
 │   │   └── index.html
@@ -79,3 +79,41 @@ mlops-assignment-dvc/
 ├── setup.py                     # Package installation
 └── README.md
 ```
+
+## 🚀 Getting Started  
+### Prerequisites  
+- Python 3.x  
+- Docker  
+- DVC  
+- Azure CLI (for deployment)  
+
+### Local Setup  
+1. Clone the repository:  
+   ```bash
+   git clone https://github.com/Sayan-Mondal2022/mlops-assignment-dvc.git
+   cd mlops-assignment-dvc
+    ```
+
+2. Pull data and models via DVC:
+   ```bash
+    dvc pull
+   ```
+
+3. Install dependencies:
+   ```bash
+    pip install -r requirements.txt
+   ```
+
+4. Run the pipeline locally (optional):
+   ```bash
+    dvc repro
+   ```
+
+5. Launch the app locally via Docker:
+   ```bash
+    cd docker
+    docker build -t cpu-predictor .
+    docker run -p 5000:5000 cpu-predictor
+   ```
+
+Then open your browser to [`http://localhost:5000`](http://localhost:5000)
