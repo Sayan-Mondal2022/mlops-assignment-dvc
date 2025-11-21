@@ -2,7 +2,6 @@ import os
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from predictor import CPUPredictor
-from azure.storage.blob import BlobClient
 from dotenv import load_dotenv
 
 # Load .env for local development
@@ -14,9 +13,7 @@ CORS(app)
 # ------------------------------------------------------
 # Configuration
 # ------------------------------------------------------
-MODEL_CONTAINER = "models"
-MODEL_PREFIX = "cpu"
-MODEL_DIR = "models/cpu"
+MODEL_DIR = "models"
 
 MODEL_FILES = [
     "label_encoder.pkl",
@@ -27,69 +24,44 @@ MODEL_FILES = [
 ]
 
 # ------------------------------------------------------
-# Helper: download blob
+# Verify model files exist locally
 # ------------------------------------------------------
-def download_blob(container: str, blob_name: str, local_path: str):
-    conn_str = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
-    if not conn_str:
-        raise RuntimeError("AZURE_STORAGE_CONNECTION_STRING is missing.")
+# def verify_model_files():
+#     print("📁 Verifying model files:")
+#     all_files_exist = True
+    
+#     for fname in MODEL_FILES:
+#         local_path = f"{MODEL_DIR}/{fname}"
+#         exists = os.path.exists(local_path)
+#         print(f"   {local_path}: {'✅' if exists else '❌'}")
+#         if not exists:
+#             all_files_exist = False
+            
+#     return all_files_exist
 
-    os.makedirs(os.path.dirname(local_path) or ".", exist_ok=True)
+# # Check if all model files are present
+# models_available = verify_model_files()
 
-    print(f"⬇️ Downloading blob {container}/{blob_name} -> {local_path}")
-    blob = BlobClient.from_connection_string(
-        conn_str=conn_str,
-        container_name=container,
-        blob_name=blob_name
-    )
-
-    with open(local_path, "wb") as f:
-        f.write(blob.download_blob().readall())
-
-    print(f"✔ Downloaded {local_path}")
-
-# ------------------------------------------------------
-# Download all model files at startup
-# ------------------------------------------------------
-def fetch_all_models():
-    print("📥 Fetching model files from Azure Blob Storage...")
-    for fname in MODEL_FILES:
-        blob_name = f"{MODEL_PREFIX}/{fname}"
-        local_path = f"{MODEL_DIR}/{fname}"
-
-        if os.path.exists(local_path):
-            print(f"✔ Already exists locally: {local_path}")
-        else:
-            download_blob(MODEL_CONTAINER, blob_name, local_path)
-
-    print("✅ All model files downloaded.")
-
-try:
-    fetch_all_models()
-except Exception as e:
-    print("❌ Failed to download models:", e)
+# if not models_available:
+#     print("❌ Some model files are missing. Please ensure all models are copied to the models/cpu/ directory.")
+# else:
+#     print("✅ All model files are available locally.")
 
 # ------------------------------------------------------
-# Verify downloaded files
-# ------------------------------------------------------
-print("📁 Verifying downloaded files:")
-for fname in MODEL_FILES:
-    local_path = f"{MODEL_DIR}/{fname}"
-    exists = os.path.exists(local_path)
-    print(f"   {local_path}: {'✅' if exists else '❌'}")
-
-# ------------------------------------------------------
-# Load predictor after models are downloaded
+# Load predictor with local models
 # ------------------------------------------------------
 predictor = CPUPredictor()
-try:
-    models_loaded = predictor.load_models()
-    if models_loaded:
-        print("✅ Predictor initialized successfully.")
-    else:
-        print("❌ Predictor models failed to load.")
-except Exception as e:
-    print("❌ Failed to load predictor models:", e)
+if True:
+    try:
+        models_loaded = predictor.load_models()
+        if models_loaded:
+            print("✅ Predictor initialized successfully.")
+        else:
+            print("❌ Predictor models failed to load.")
+    except Exception as e:
+        print("❌ Failed to load predictor models:", e)
+else:
+    print("⚠️  Skipping predictor initialization due to missing model files.")
 
 # ------------------------------------------------------
 # Routes
@@ -100,6 +72,13 @@ def index():
 
 @app.route("/predict", methods=["POST"])
 def predict():
+    # Check if predictor is ready
+    if not predictor.models_loaded:
+        return jsonify({
+            "error": "Service unavailable - model files not loaded",
+            "details": "The prediction service is not ready. Please check if all model files are available."
+        }), 503
+
     try:
         data = request.get_json()
         if not data:

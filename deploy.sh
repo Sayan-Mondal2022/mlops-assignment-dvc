@@ -12,7 +12,7 @@ IMAGE_TAG="latest"
 CONTAINER_APP_NAME="cpu-predictor-app"
 ENV_NAME="cpu-env"
 TARGET_PORT=5001               # IMPORTANT: matches Flask app.py
-DOCKERFILE_PATH="api/Dockerfile"   # Your Dockerfile is in repo root
+DOCKERFILE_PATH="app/Dockerfile"   # Your Dockerfile is in repo root
 BUILD_CONTEXT="."
 
 #############################################

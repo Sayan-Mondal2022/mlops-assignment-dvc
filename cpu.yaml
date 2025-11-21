@@ -1,0 +1,114 @@
+id: /subscriptions/5154b84f-5946-4af2-af61-cc8465225a33/resourceGroups/mlops-assignment-resources/providers/Microsoft.App/containerapps/cpu-predictor-app
+identity:
+  type: None
+location: Central India
+name: cpu-predictor-app
+properties:
+  configuration:
+    activeRevisionsMode: Single
+    dapr: null
+    identitySettings: []
+    ingress:
+      additionalPortMappings: null
+      allowInsecure: false
+      clientCertificateMode: null
+      corsPolicy: null
+      customDomains: null
+      exposedPort: 0
+      external: true
+      fqdn: cpu-predictor-app.purplestone-5673d9e8.centralindia.azurecontainerapps.io
+      ipSecurityRestrictions: null
+      stickySessions: null
+      targetPort: 5001
+      targetPortHttpScheme: null
+      traffic:
+      - latestRevision: true
+        weight: 100
+      transport: Auto
+      clientTimeout: 300
+    maxInactiveRevisions: 100
+    registries:
+    - identity: ''
+      passwordSecretRef: sayanacrmlopsazurecrio-sayanacrmlops
+      server: sayanacrmlops.azurecr.io
+      username: sayanacrmlops
+    revisionTransitionThreshold: null
+    runtime: null
+    secrets:
+    - name: acr-pwd
+    - name: sayanacrmlopsazurecrio-sayanacrmlops
+    service: null
+    targetLabel: ''
+  customDomainVerificationId: D5AD169E3D0EC3D379AE702BBE2F88230E086B73778E908F9000B89E1EA3F51A
+  delegatedIdentities: []
+  environmentId: /subscriptions/5154b84f-5946-4af2-af61-cc8465225a33/resourceGroups/mlops-assignment-resources/providers/Microsoft.App/managedEnvironments/cpu-env
+  eventStreamEndpoint: https://centralindia.azurecontainerapps.dev/subscriptions/5154b84f-5946-4af2-af61-cc8465225a33/resourceGroups/mlops-assignment-resources/containerApps/cpu-predictor-app/eventstream
+  latestReadyRevisionName: cpu-predictor-app--bxyvvdo
+  latestRevisionFqdn: cpu-predictor-app--bxyvvdo.purplestone-5673d9e8.centralindia.azurecontainerapps.io
+  latestRevisionName: cpu-predictor-app--bxyvvdo
+  managedEnvironmentId: /subscriptions/5154b84f-5946-4af2-af61-cc8465225a33/resourceGroups/mlops-assignment-resources/providers/Microsoft.App/managedEnvironments/cpu-env
+  outboundIpAddresses:
+  - 20.204.252.66
+  - 20.204.255.44
+  - 20.207.112.119
+  - 20.204.254.22
+  - 4.213.194.124
+  - 4.213.194.130
+  - 4.213.194.85
+  - 4.213.194.149
+  - 4.213.194.114
+  - 4.213.194.154
+  - 20.207.113.244
+  - 20.207.114.82
+  - 20.207.113.247
+  - 20.207.113.242
+  - 4.188.105.82
+  - 4.213.216.206
+  - 4.188.110.244
+  - 4.186.33.69
+  - 4.186.36.246
+  - 4.186.37.141
+  - 4.187.221.107
+  - 4.224.75.64
+  - 4.224.128.131
+  - 20.235.215.243
+  - 4.188.89.163
+  - 13.71.53.213
+  - 20.219.205.56
+  - 4.224.156.119
+  - 4.224.154.29
+  - 4.186.36.9
+  - 20.219.200.56
+  patchingMode: Automatic
+  provisioningState: Succeeded
+  runningStatus: Running
+  template:
+    containers:
+    - image: sayanacrmlops.azurecr.io/cpu-predictor:latest
+      imageType: ContainerImage
+      name: cpu-predictor-app
+      resources:
+        cpu: 0.5
+        ephemeralStorage: 2Gi
+        memory: 1Gi
+    initContainers: null
+    revisionSuffix: ''
+    scale:
+      cooldownPeriod: 300
+      maxReplicas: 10
+      minReplicas: null
+      pollingInterval: 30
+      rules: null
+    serviceBinds: null
+    terminationGracePeriodSeconds: null
+    volumes: null
+  workloadProfileName: Consumption
+resourceGroup: mlops-assignment-resources
+systemData:
+  createdAt: '2025-11-20T13:34:12.4670407'
+  createdBy: sayan.sm2024@gmail.com
+  createdByType: User
+  lastModifiedAt: '2025-11-20T17:33:37.7686794'
+  lastModifiedBy: sayan.sm2024@gmail.com
+  lastModifiedByType: User
+type: Microsoft.App/containerApps

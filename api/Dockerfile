@@ -30,18 +30,15 @@ RUN pip install --upgrade pip && \
 # 6. Copy the entire project
 # -----------------------------
 COPY . /app
+COPY models/ ./models/
+
 
 # -----------------------------
-# 7. Create necessary directories
-# -----------------------------
-RUN mkdir -p models/cpu
-
-# -----------------------------
-# 8. Expose Flask port
+# 7. Expose Flask port
 # -----------------------------
 EXPOSE 5001
 
 # -----------------------------
-# 9. Run the Flask server
+# 8. Run the Flask server
 # -----------------------------
 CMD ["python", "app.py"]

@@ -30,9 +30,6 @@ outputs/
 snapshots/
 aml_runs/
 
-# Ignore model binaries but KEEP the folders
-models/*.pkl
-models/**/*.pkl
 
 # Allow tracking pointers
 !models/*.dvc
@@ -60,5 +57,3 @@ models/**/*.pkl
 !templates/
 !static/
 
-# Allow model folders (not the binary files)
-!models/

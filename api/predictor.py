@@ -9,15 +9,37 @@ class CPUPredictor:
         self.scaler = None
         self.label_encoder = None
         self.feature_names = ['cpu_request', 'mem_request', 'cpu_limit', 'mem_limit', 'runtime_minutes', 'controller_kind']
+        self.models_loaded = False
         
     def load_models(self):
-        """Load all trained models and preprocessing objects"""
+        """Load all trained models and preprocessing objects from local models/cpu/ directory"""
         try:
-            base_path = "models/cpu"
+            base_path = "models"
+            
+            # Check if model directory exists
+            if not os.path.exists(base_path):
+                print(f"❌ Model directory not found: {base_path}")
+                return False
+            
+            print(f"📁 Loading models from: {base_path}")
             
             # Load preprocessing objects
-            self.scaler = joblib.load(f'{base_path}/scaler.pkl')
-            self.label_encoder = joblib.load(f'{base_path}/label_encoder.pkl')
+            scaler_path = f'{base_path}/scaler.pkl'
+            label_encoder_path = f'{base_path}/label_encoder.pkl'
+            
+            if os.path.exists(scaler_path):
+                self.scaler = joblib.load(scaler_path)
+                print("✅ Loaded scaler")
+            else:
+                print(f"❌ Scaler file not found: {scaler_path}")
+                return False
+                
+            if os.path.exists(label_encoder_path):
+                self.label_encoder = joblib.load(label_encoder_path)
+                print("✅ Loaded label encoder")
+            else:
+                print(f"❌ Label encoder file not found: {label_encoder_path}")
+                return False
             
             # Load models
             model_files = {
@@ -26,24 +48,29 @@ class CPUPredictor:
                 'Random Forest': f'{base_path}/random_forest_model.pkl'
             }
             
+            models_loaded_count = 0
             for name, path in model_files.items():
                 if os.path.exists(path):
                     self.models[name] = joblib.load(path)
+                    models_loaded_count += 1
                     print(f"✅ Loaded {name} model")
                 else:
                     print(f"❌ Model file not found: {path}")
             
-            print(f"✔ Loaded {len(self.models)} models from: {base_path}")
+            print(f"✔ Loaded {models_loaded_count} models from: {base_path}")
             
             # Debug information
             if hasattr(self.scaler, 'n_features_in_'):
                 print(f"🔍 Scaler expects {self.scaler.n_features_in_} features")
-            print(f"🔍 Label encoder classes: {self.label_encoder.classes_}")
+            if hasattr(self.label_encoder, 'classes_'):
+                print(f"🔍 Label encoder classes: {self.label_encoder.classes_}")
             
-            return len(self.models) > 0
+            self.models_loaded = models_loaded_count > 0
+            return self.models_loaded
             
         except Exception as e:
             print(f"❌ Error loading models: {str(e)}")
+            self.models_loaded = False
             return False
     
     def preprocess_input(self, input_data):
@@ -55,16 +82,22 @@ class CPUPredictor:
             print(f"📊 Raw input data: {input_data}")
             
             # Encode controller_kind
-            if 'controller_kind' in df.columns:
-                df['controller_kind'] = self.label_encoder.transform(df['controller_kind'])
-                print(f"🔤 Encoded controller_kind '{input_data['controller_kind']}'")
+            if 'controller_kind' in df.columns and self.label_encoder is not None:
+                # Check if the input value is in the encoder's classes
+                input_controller = input_data['controller_kind']
+                if input_controller in self.label_encoder.classes_:
+                    df['controller_kind'] = self.label_encoder.transform([input_controller])[0]
+                    print(f"🔤 Encoded controller_kind '{input_controller}' to {df['controller_kind'].iloc[0]}")
+                else:
+                    print(f"❌ Unknown controller_kind: '{input_controller}'. Available: {self.label_encoder.classes_}")
+                    return None
             
             # Scale numerical features
             numerical_cols = [col for col in self.feature_names if col != 'controller_kind']
             print(f"📊 Numerical features to scale: {numerical_cols}")
             print(f"📊 Features before scaling: {df[numerical_cols].values}")
             
-            if self.scaler:
+            if self.scaler is not None:
                 df[numerical_cols] = self.scaler.transform(df[numerical_cols])
                 print(f"📊 Features after scaling: {df[numerical_cols].values}")
             
@@ -77,6 +110,10 @@ class CPUPredictor:
     
     def predict_all(self, data):
         """Make predictions using all loaded models - matches Streamlit app logic"""
+        if not self.models_loaded:
+            print("❌ Models not loaded. Cannot make predictions.")
+            return None
+            
         predictions = {}
         
         # Preprocess input
