@@ -41,4 +41,4 @@ EXPOSE 5001
 # -----------------------------
 # 8. Run the Flask server
 # -----------------------------
-CMD ["python", "app.py"]
+CMD ["python", "api/app.py"]

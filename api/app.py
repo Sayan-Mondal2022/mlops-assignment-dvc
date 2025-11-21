@@ -11,57 +11,18 @@ app = Flask(__name__, template_folder="templates", static_folder="static")
 CORS(app)
 
 # ------------------------------------------------------
-# Configuration
-# ------------------------------------------------------
-MODEL_DIR = "models"
-
-MODEL_FILES = [
-    "label_encoder.pkl",
-    "lightgbm_model.pkl",
-    "random_forest_model.pkl",
-    "scaler.pkl",
-    "xgboost_model.pkl"
-]
-
-# ------------------------------------------------------
-# Verify model files exist locally
-# ------------------------------------------------------
-# def verify_model_files():
-#     print("📁 Verifying model files:")
-#     all_files_exist = True
-    
-#     for fname in MODEL_FILES:
-#         local_path = f"{MODEL_DIR}/{fname}"
-#         exists = os.path.exists(local_path)
-#         print(f"   {local_path}: {'✅' if exists else '❌'}")
-#         if not exists:
-#             all_files_exist = False
-            
-#     return all_files_exist
-
-# # Check if all model files are present
-# models_available = verify_model_files()
-
-# if not models_available:
-#     print("❌ Some model files are missing. Please ensure all models are copied to the models/cpu/ directory.")
-# else:
-#     print("✅ All model files are available locally.")
-
-# ------------------------------------------------------
 # Load predictor with local models
 # ------------------------------------------------------
 predictor = CPUPredictor()
-if True:
-    try:
-        models_loaded = predictor.load_models()
-        if models_loaded:
-            print("✅ Predictor initialized successfully.")
-        else:
-            print("❌ Predictor models failed to load.")
-    except Exception as e:
-        print("❌ Failed to load predictor models:", e)
-else:
-    print("⚠️  Skipping predictor initialization due to missing model files.")
+try:
+    models_loaded = predictor.load_models()
+    if models_loaded:
+        print("✅ Predictor initialized successfully.")
+        print(f"✅ Loaded models: {list(predictor.models.keys())}")
+    else:
+        print("❌ Predictor models failed to load.")
+except Exception as e:
+    print("❌ Failed to load predictor models:", e)
 
 # ------------------------------------------------------
 # Routes
@@ -86,7 +47,16 @@ def predict():
 
         print(f"🎯 Received prediction request: {data}")
 
-        # Use the new predictor interface
+        # Validate required fields
+        required_fields = ['cpu_request', 'mem_request', 'cpu_limit', 'mem_limit', 'runtime_minutes', 'controller_kind']
+        missing_fields = [field for field in required_fields if field not in data]
+        if missing_fields:
+            return jsonify({
+                "error": f"Missing required fields: {missing_fields}",
+                "required_fields": required_fields
+            }), 400
+
+        # Use the predictor
         predictions = predictor.predict_all(data)
         
         if predictions is None:
@@ -117,15 +87,26 @@ def predict():
         }
 
         return jsonify({
-            "avg_prediction": avg_prediction,
-            "predictions": result_predictions
+            "avg_prediction": round(avg_prediction, 4),
+            "predictions": result_predictions,
+            "status": "success"
         })
 
     except Exception as e:
         print(f"❌ Route error: {e}")
         return jsonify({"error": str(e)}), 500
 
+@app.route("/health", methods=["GET"])
+def health():
+    """Health check endpoint"""
+    return jsonify({
+        "status": "ready" if predictor.models_loaded else "loading",
+        "models_loaded": list(predictor.models.keys()) if predictor.models_loaded else [],
+        "models_loaded_count": len(predictor.models) if predictor.models_loaded else 0
+    })
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5001))
+    debug = os.environ.get("FLASK_DEBUG", "false").lower() == "true"
     print(f"🚀 Starting server on port {port}...")
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=port, debug=debug)

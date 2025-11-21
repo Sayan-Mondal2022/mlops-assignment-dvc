@@ -43,17 +43,3 @@ aml_runs/
 # DO NOT COPY .git into the image
 # -----------------------------
 .git/
-
-# -----------------------------
-# Allow required files into Docker image
-# -----------------------------
-!app.py
-!predictor.py
-!requirements.txt
-!params.yaml
-!Dockerfile
-
-# Allow template and static files
-!templates/
-!static/
-
