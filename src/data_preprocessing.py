@@ -111,7 +111,7 @@ def preprocess_data():
         }
     }
     
-    joblib.dump(processed_data, 'data/processed/processed_data.pkl')
+    joblib.dump(processed_data, 'data/processed/processed_data.pkl', protocol=4)
     
     # Print final summary
     print("\n✅ Preprocessing completed successfully!")

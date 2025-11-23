@@ -32,16 +32,8 @@ az containerapp update \
   --resource-group ${RESOURCE_GROUP} \
   --image "${ACR_NAME}.azurecr.io/${IMAGE_NAME}:${IMAGE_TAG}"
 
-# ========= RESTART REVISION =======
-echo "♻ Restarting active revision..."
-az containerapp revision restart \
-  --name ${CONTAINER_APP_NAME} \
-  --resource-group ${RESOURCE_GROUP}
+echo "RESTART Needs to be done...Ending"
+ az containerapp revision restart   --name cpu-predictor-new   --resource-group mlops-assignment-resources   --revision cpu-predictor-new--0000001
 
-# ========= SHOW INFO =============
-echo "🌍 Fetching Public URL..."
-az containerapp show \
-  --name ${CONTAINER_APP_NAME} \
-  --resource-group ${RESOURCE_GROUP} \
-  --query properties.configuration.ingress.fqdn \
-  -o tsv
+echo "URL...."
+az containerapp show   --name cpu-predictor-new   --resource-group mlops-assignment-resources   --query properties.configuration.ingress.fqdn   -o tsv

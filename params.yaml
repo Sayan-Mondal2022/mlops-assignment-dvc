@@ -15,7 +15,7 @@ model:
     fit_intercept: true
     n_jobs: null
     positive: false
-  name: random_forest
+  name: linear_regression
   random_forest:
     max_depth: 15
     min_samples_leaf: 1

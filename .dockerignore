@@ -25,9 +25,12 @@ tmp/
 # (We download models inside container, we do NOT copy them)
 # -----------------------------
 data/
+src/
 outputs/
 snapshots/
 aml_runs/
+
+README.md
 
 # Allow tracking pointers
 !models/*.dvc

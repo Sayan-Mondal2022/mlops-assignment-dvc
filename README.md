@@ -203,6 +203,17 @@ az containerapp revision restart \
   --revision <revision-name>
 ```
 
+### **6️⃣ Querying the URL**
+Restart the active revision to apply changes:
+
+```bash
+az containerapp show \
+    --name <YOUR_CONTAINER_APP_NAME> \
+    --resource-group <YOUR_RESOURCE_GROUP_NAME> \
+    --query 'properties.configuration.ingress.fqdn' \
+    --output tsv
+```
+
 ### **7️⃣ View Container Logs (Optional but Recommended)**
 To debug issues or verify successful startup:
 

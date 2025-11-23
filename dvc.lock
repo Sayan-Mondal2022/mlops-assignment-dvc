@@ -10,8 +10,8 @@ stages:
       isexec: true
     - path: src/data_preprocessing.py
       hash: md5
-      md5: 784788714f040c729b30f4f97ec2be1c
-      size: 4444
+      md5: ead8e3e33c8d1932713c363550f58c62
+      size: 4456
       isexec: true
     params:
       params.yaml:
@@ -34,26 +34,26 @@ stages:
     outs:
     - path: data/processed/processed_data.pkl
       hash: md5
-      md5: e74129e577402c957087ff947e7b1f7f
-      size: 15906812
+      md5: e02b1f60aebd18696d1f952ac8b57682
+      size: 15906715
       isexec: true
     - path: models/label_encoder.pkl
       hash: md5
-      md5: 6c6afed534f3146fffa15d65f28c5b33
-      size: 528
+      md5: d7d2db561f29d2326035862459663e00
+      size: 485
       isexec: true
     - path: models/scaler.pkl
       hash: md5
-      md5: bbff6477f849b0dd5b11295abf8a76d9
-      size: 1103
+      md5: 5e6a5bec1cb38d2b84e28309c392d251
+      size: 1039
       isexec: true
   train:
     cmd: python src/training.py
     deps:
     - path: data/processed/processed_data.pkl
       hash: md5
-      md5: e74129e577402c957087ff947e7b1f7f
-      size: 15906812
+      md5: e02b1f60aebd18696d1f952ac8b57682
+      size: 15906715
       isexec: true
     - path: src/training.py
       hash: md5
@@ -79,7 +79,7 @@ stages:
             fit_intercept: true
             n_jobs:
             positive: false
-          name: xgboost
+          name: linear_regression
           random_forest:
             max_depth: 15
             min_samples_leaf: 1
@@ -94,39 +94,39 @@ stages:
             random_state: 42
             subsample: 0.8
     outs:
-    - path: metrics/training/xgboost_metrics.json
+    - path: metrics/training/linear_regression_metrics.json
       hash: md5
-      md5: 2b3d6e25928256e08fa5593ed41742e8
-      size: 430
+      md5: 5cfb7fe158f8763ee47f16ea8f332b61
+      size: 380
       isexec: true
-    - path: models/xgboost_model.pkl
+    - path: models/linear_regression_model.pkl
       hash: md5
-      md5: fe3bc2fd35874196f15904c8c668e76b
-      size: 543153
+      md5: 33ec558cec66f6adf7909f529e417c96
+      size: 1001
       isexec: true
   evaluate:
     cmd: python src/evaluation.py
     deps:
-    - path: models/lightgbm_model.pkl
+    - path: models/linear_regression_model.pkl
       hash: md5
-      md5: 47934351f2520e1d007c72521e4145e1
-      size: 313078
+      md5: 33ec558cec66f6adf7909f529e417c96
+      size: 1001
       isexec: true
     - path: src/evaluation.py
       hash: md5
-      md5: f66898da5b84c0d9506e443a6cc38699
-      size: 10148
+      md5: cd7709d001b8c513205b79c7381c5c89
+      size: 12326
       isexec: true
     outs:
-    - path: metrics/evaluation/lightgbm_evaluation.json
+    - path: metrics/evaluation/linear_regression_evaluation.json
       hash: md5
-      md5: f76e41f5ae21d4c002f6287da6182c2e
-      size: 150
+      md5: 864976b72f16a3fafcd59795fe9e8bc9
+      size: 156
       isexec: true
-    - path: metrics/plots/lightgbm
+    - path: metrics/plots/linear_regression
       hash: md5
-      md5: 973fe531ef825475f6f676feb1d542d2.dir
-      size: 663013
+      md5: fc2bf3bb8c49ac298d86bf0a732b675a.dir
+      size: 614390
       nfiles: 4
   save_comparison:
     cmd: python src/save_comparison.py

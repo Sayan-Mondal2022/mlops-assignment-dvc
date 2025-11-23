@@ -3,9 +3,22 @@ import pandas as pd
 import json
 import os
 import sys
+# --- FIX STARTS HERE ---
 
-# Add the api directory to Python path so we can import predictor
-sys.path.append('/app/api')
+# 1. Get the folder where app.py is currently running (the "api" folder)
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# 2. Get the parent folder (the "app" folder)
+BASE_DIR = os.path.dirname(CURRENT_DIR)
+
+# 3. Define paths relative to the parent folder
+MODELS_DIR = os.path.join(BASE_DIR, "models")
+METRICS_DIR = os.path.join(BASE_DIR, "metrics")
+
+# 4. Add current directory to path so we can import predictor
+if CURRENT_DIR not in sys.path:
+    sys.path.append(CURRENT_DIR)
+
 from predictor import CPUPredictor
 
 # Helper function to get color from theme
@@ -107,15 +120,11 @@ st.markdown(f"""
 </style>
 """, unsafe_allow_html=True)
 
-# CORRECTED PATHS FOR DOCKER CONTAINER
-MODELS_DIR = "/app/models"
-METRICS_DIR = "/app/metrics"
-
 # Initialize predictor
 @st.cache_resource
 def load_predictor():
     """Load the predictor with cached resource"""
-    predictor = CPUPredictor()
+    predictor = CPUPredictor(MODELS_DIR)
     try:
         # Update predictor to use correct paths in container
         predictor.models_dir = MODELS_DIR
