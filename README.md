@@ -7,7 +7,7 @@ This repository contains an end-to-end MLOps workflow built for learning purpose
 
 Key features:  
 - Three ML models trained and evaluated:  
-  1. LightGBM (Light GBM)  
+  1. Linear Regression  
   2. XGBoost Regressor  
   3. RandomForestRegressor (Random Forest)  
 - Version control and experiment tracking using DVC  
@@ -20,10 +20,18 @@ This project is done **solely for learning purposes**.
 
 You can try the deployed CPU Predictor web application here:
 
-<img width="621" height="908" alt="image" src="https://github.com/user-attachments/assets/d6b4b47b-dfc2-493b-94f5-27eac351da3e" />
+***Dashboard***
+<img width="1911" height="986" alt="image" src="https://github.com/user-attachments/assets/99265af8-f15a-4b0e-8061-3646245d47cb" />
+
+***Individual Model data***
+<img width="1920" height="992" alt="image" src="https://github.com/user-attachments/assets/71b3b13d-c147-4653-8d09-9a98ac890de8" />
 
 
-🔗 **Live App:** https://cpu-predictor-app.purplestone-5673d9e8.centralindia.azurecontainerapps.io/
+***CPU Usage Prediction***
+<img width="1909" height="865" alt="image" src="https://github.com/user-attachments/assets/cb779432-db88-48b3-87e8-9092084b3666" />
+
+
+🔗 **Live App:** [http://cpu-predictor-new.purplestone-5673d9e8.centralindia.azurecontainerapps.io/](http://cpu-predictor-new.purplestone-5673d9e8.centralindia.azurecontainerapps.io/)
 
 This demo is hosted on **Azure Container Apps**, fully containerized using **Docker**, and powered by the trained ML models tracked with **DVC**.  
 Use the UI to input values and get real-time CPU performance predictions.
@@ -52,7 +60,7 @@ mlops-assignment-dvc/
 │       └── test.csv
 │
 ├── models/                      # Stored ML models (DVC-tracked)
-│   ├── lightgbm_model.pkl
+│   ├── linear_regression_model.pkl
 │   ├── xgboost_model.pkl
 │   └── random_forest_model.pkl
 │
@@ -124,7 +132,7 @@ Then open your browser to [`http://localhost:5000`](http://localhost:5000)
 
 The three models trained are as follows:
 
-- **LightGBM** – High-speed gradient boosting framework optimized for performance
+- **Linear Regression** – a simple yet powerful algorithm that models the relationship between variables by fitting a straight line through the data points.
 - **XGBoost Regressor** – Well-known distributed gradient boosting framework
 - **Random Forest Regressor** – Ensemble of decision trees for robust performance
 
@@ -203,7 +211,7 @@ az containerapp revision restart \
   --revision <revision-name>
 ```
 
-### **6️⃣ Querying the URL**
+### **7️⃣ Querying the URL**
 Restart the active revision to apply changes:
 
 ```bash
@@ -214,7 +222,7 @@ az containerapp show \
     --output tsv
 ```
 
-### **7️⃣ View Container Logs (Optional but Recommended)**
+### **8️⃣ View Container Logs (Optional but Recommended)**
 To debug issues or verify successful startup:
 
 ```bash
