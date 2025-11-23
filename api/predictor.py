@@ -4,28 +4,32 @@ import numpy as np
 import pandas as pd
 
 class CPUPredictor:
-    def __init__(self):
+    def __init__(self, models_dir="/app/models"):
         self.models = {}
         self.scaler = None
         self.label_encoder = None
         self.feature_names = ['cpu_request', 'mem_request', 'cpu_limit', 'mem_limit', 'runtime_minutes', 'controller_kind']
         self.models_loaded = False
+        self.models_dir = models_dir  # Make models directory configurable
         
     def load_models(self):
-        """Load all trained models and preprocessing objects from local models/cpu/ directory"""
+        """Load all trained models and preprocessing objects from configured models directory"""
         try:
-            base_path = "models"
+            base_path = self.models_dir
             
             # Check if model directory exists
             if not os.path.exists(base_path):
                 print(f"❌ Model directory not found: {base_path}")
+                print(f"🔍 Current working directory: {os.getcwd()}")
+                print(f"🔍 Directory contents: {os.listdir('.')}")
                 return False
             
             print(f"📁 Loading models from: {base_path}")
+            print(f"🔍 Models directory contents: {os.listdir(base_path)}")
             
             # Load preprocessing objects
-            scaler_path = f'{base_path}/scaler.pkl'
-            label_encoder_path = f'{base_path}/label_encoder.pkl'
+            scaler_path = os.path.join(base_path, 'scaler.pkl')
+            label_encoder_path = os.path.join(base_path, 'label_encoder.pkl')
             
             if os.path.exists(scaler_path):
                 self.scaler = joblib.load(scaler_path)
@@ -43,9 +47,9 @@ class CPUPredictor:
             
             # Load models
             model_files = {
-                'XGBoost': f'{base_path}/xgboost_model.pkl',
-                'LightGBM': f'{base_path}/lightgbm_model.pkl', 
-                'Random Forest': f'{base_path}/random_forest_model.pkl'
+                'XGBoost': os.path.join(base_path, 'xgboost_model.pkl'),
+                'LightGBM': os.path.join(base_path, 'lightgbm_model.pkl'), 
+                'Random Forest': os.path.join(base_path, 'random_forest_model.pkl')
             }
             
             models_loaded_count = 0
@@ -70,6 +74,8 @@ class CPUPredictor:
             
         except Exception as e:
             print(f"❌ Error loading models: {str(e)}")
+            import traceback
+            print(f"🔍 Detailed error: {traceback.format_exc()}")
             self.models_loaded = False
             return False
     
@@ -106,6 +112,8 @@ class CPUPredictor:
             
         except Exception as e:
             print(f"❌ Error in preprocessing: {str(e)}")
+            import traceback
+            print(f"🔍 Detailed preprocessing error: {traceback.format_exc()}")
             return None
     
     def predict_all(self, data):

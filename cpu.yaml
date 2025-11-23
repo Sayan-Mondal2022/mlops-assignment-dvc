@@ -1,11 +1,12 @@
-id: /subscriptions/5154b84f-5946-4af2-af61-cc8465225a33/resourceGroups/mlops-assignment-resources/providers/Microsoft.App/containerapps/cpu-predictor-app
+id: /subscriptions/5154b84f-5946-4af2-af61-cc8465225a33/resourceGroups/mlops-assignment-resources/providers/Microsoft.App/containerapps/cpu-predictor-new
 identity:
   type: None
+kind: containerapps
 location: Central India
-name: cpu-predictor-app
+name: cpu-predictor-new
 properties:
   configuration:
-    activeRevisionsMode: Single
+    activeRevisionsMode: Multiple
     dapr: null
     identitySettings: []
     ingress:
@@ -16,35 +17,36 @@ properties:
       customDomains: null
       exposedPort: 0
       external: true
-      fqdn: cpu-predictor-app.purplestone-5673d9e8.centralindia.azurecontainerapps.io
+      allowInsecure: true
+      fqdn: cpu-predictor-new.internal.purplestone-5673d9e8.centralindia.azurecontainerapps.io
       ipSecurityRestrictions: null
-      stickySessions: null
+      stickySessions:
+        affinity: none
       targetPort: 8501
       targetPortHttpScheme: null
       traffic:
-      - latestRevision: true
+      - revisionName: cpu-predictor-new--0000001
         weight: 100
       transport: Auto
     maxInactiveRevisions: 100
     registries:
     - identity: ''
-      passwordSecretRef: sayanacrmlopsazurecrio-sayanacrmlops
+      passwordSecretRef: reg-pswd-4650137e-bcba
       server: sayanacrmlops.azurecr.io
       username: sayanacrmlops
     revisionTransitionThreshold: null
     runtime: null
     secrets:
-    - name: acr-pwd
-    - name: sayanacrmlopsazurecrio-sayanacrmlops
+    - name: reg-pswd-4650137e-bcba
     service: null
     targetLabel: ''
   customDomainVerificationId: D5AD169E3D0EC3D379AE702BBE2F88230E086B73778E908F9000B89E1EA3F51A
   delegatedIdentities: []
   environmentId: /subscriptions/5154b84f-5946-4af2-af61-cc8465225a33/resourceGroups/mlops-assignment-resources/providers/Microsoft.App/managedEnvironments/cpu-env
-  eventStreamEndpoint: https://centralindia.azurecontainerapps.dev/subscriptions/5154b84f-5946-4af2-af61-cc8465225a33/resourceGroups/mlops-assignment-resources/containerApps/cpu-predictor-app/eventstream
-  latestReadyRevisionName: cpu-predictor-app--bxyvvdo
-  latestRevisionFqdn: cpu-predictor-app--0000002.purplestone-5673d9e8.centralindia.azurecontainerapps.io
-  latestRevisionName: cpu-predictor-app--0000002
+  eventStreamEndpoint: https://centralindia.azurecontainerapps.dev/subscriptions/5154b84f-5946-4af2-af61-cc8465225a33/resourceGroups/mlops-assignment-resources/containerApps/cpu-predictor-new/eventstream
+  latestReadyRevisionName: cpu-predictor-new--0000001
+  latestRevisionFqdn: cpu-predictor-new--0000001.internal.purplestone-5673d9e8.centralindia.azurecontainerapps.io
+  latestRevisionName: cpu-predictor-new--0000001
   managedEnvironmentId: /subscriptions/5154b84f-5946-4af2-af61-cc8465225a33/resourceGroups/mlops-assignment-resources/providers/Microsoft.App/managedEnvironments/cpu-env
   outboundIpAddresses:
   - 20.207.113.244
@@ -83,25 +85,9 @@ properties:
   runningStatus: Running
   template:
     containers:
-    - env:
-      - name: PORT
-        value: '8501'
-      image: sayanacrmlops.azurecr.io/cpu-predictor:latest
-      probes:
-        - type: Liveness
-          httpGet:
-            path: /
-            port: 8501
-          initialDelaySeconds: 10
-          periodSeconds: 5
-        - type: Readiness
-          httpGet:
-            path: /
-            port: 8501
-          initialDelaySeconds: 10
-          periodSeconds: 5
+    - image: sayanacrmlops.azurecr.io/cpu-predictor:latest
       imageType: ContainerImage
-      name: cpu-predictor-app
+      name: cpu-predictor-new
       resources:
         cpu: 0.5
         ephemeralStorage: 2Gi
@@ -110,8 +96,8 @@ properties:
     revisionSuffix: ''
     scale:
       cooldownPeriod: 300
-      maxReplicas: 10
-      minReplicas: 0
+      maxReplicas: 2
+      minReplicas: 1
       pollingInterval: 30
       rules: null
     serviceBinds: null
@@ -120,10 +106,10 @@ properties:
   workloadProfileName: Consumption
 resourceGroup: mlops-assignment-resources
 systemData:
-  createdAt: '2025-11-20T13:34:12.4670407'
+  createdAt: '2025-11-22T19:12:52.9990061'
   createdBy: sayan.sm2024@gmail.com
   createdByType: User
-  lastModifiedAt: '2025-11-22T18:35:44.6710371'
+  lastModifiedAt: '2025-11-23T06:16:07.6553874'
   lastModifiedBy: sayan.sm2024@gmail.com
   lastModifiedByType: User
 type: Microsoft.App/containerApps
