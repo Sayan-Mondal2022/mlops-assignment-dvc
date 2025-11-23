@@ -8,7 +8,7 @@ IMAGE_NAME="cpu-predictor"
 IMAGE_TAG="latest"
 CONTAINER_APP_NAME="cpu-predictor-app"
 ENV_NAME="cpu-env"
-TARGET_PORT=5001
+TARGET_PORT=8501
 DOCKERFILE_PATH="app/Dockerfile"
 BUILD_CONTEXT="."
 

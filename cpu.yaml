@@ -19,13 +19,12 @@ properties:
       fqdn: cpu-predictor-app.purplestone-5673d9e8.centralindia.azurecontainerapps.io
       ipSecurityRestrictions: null
       stickySessions: null
-      targetPort: 5001
+      targetPort: 8501
       targetPortHttpScheme: null
       traffic:
       - latestRevision: true
         weight: 100
       transport: Auto
-      clientTimeout: 300
     maxInactiveRevisions: 100
     registries:
     - identity: ''
@@ -44,20 +43,10 @@ properties:
   environmentId: /subscriptions/5154b84f-5946-4af2-af61-cc8465225a33/resourceGroups/mlops-assignment-resources/providers/Microsoft.App/managedEnvironments/cpu-env
   eventStreamEndpoint: https://centralindia.azurecontainerapps.dev/subscriptions/5154b84f-5946-4af2-af61-cc8465225a33/resourceGroups/mlops-assignment-resources/containerApps/cpu-predictor-app/eventstream
   latestReadyRevisionName: cpu-predictor-app--bxyvvdo
-  latestRevisionFqdn: cpu-predictor-app--bxyvvdo.purplestone-5673d9e8.centralindia.azurecontainerapps.io
-  latestRevisionName: cpu-predictor-app--bxyvvdo
+  latestRevisionFqdn: cpu-predictor-app--0000002.purplestone-5673d9e8.centralindia.azurecontainerapps.io
+  latestRevisionName: cpu-predictor-app--0000002
   managedEnvironmentId: /subscriptions/5154b84f-5946-4af2-af61-cc8465225a33/resourceGroups/mlops-assignment-resources/providers/Microsoft.App/managedEnvironments/cpu-env
   outboundIpAddresses:
-  - 20.204.252.66
-  - 20.204.255.44
-  - 20.207.112.119
-  - 20.204.254.22
-  - 4.213.194.124
-  - 4.213.194.130
-  - 4.213.194.85
-  - 4.213.194.149
-  - 4.213.194.114
-  - 4.213.194.154
   - 20.207.113.244
   - 20.207.114.82
   - 20.207.113.247
@@ -78,13 +67,39 @@ properties:
   - 4.224.156.119
   - 4.224.154.29
   - 4.186.36.9
+  - 20.204.252.66
+  - 20.204.255.44
+  - 20.207.112.119
+  - 20.204.254.22
+  - 4.213.194.124
+  - 4.213.194.130
+  - 4.213.194.85
+  - 4.213.194.149
+  - 4.213.194.114
+  - 4.213.194.154
   - 20.219.200.56
   patchingMode: Automatic
   provisioningState: Succeeded
   runningStatus: Running
   template:
     containers:
-    - image: sayanacrmlops.azurecr.io/cpu-predictor:latest
+    - env:
+      - name: PORT
+        value: '8501'
+      image: sayanacrmlops.azurecr.io/cpu-predictor:latest
+      probes:
+        - type: Liveness
+          httpGet:
+            path: /
+            port: 8501
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        - type: Readiness
+          httpGet:
+            path: /
+            port: 8501
+          initialDelaySeconds: 10
+          periodSeconds: 5
       imageType: ContainerImage
       name: cpu-predictor-app
       resources:
@@ -96,7 +111,7 @@ properties:
     scale:
       cooldownPeriod: 300
       maxReplicas: 10
-      minReplicas: null
+      minReplicas: 0
       pollingInterval: 30
       rules: null
     serviceBinds: null
@@ -108,7 +123,7 @@ systemData:
   createdAt: '2025-11-20T13:34:12.4670407'
   createdBy: sayan.sm2024@gmail.com
   createdByType: User
-  lastModifiedAt: '2025-11-20T17:33:37.7686794'
+  lastModifiedAt: '2025-11-22T18:35:44.6710371'
   lastModifiedBy: sayan.sm2024@gmail.com
   lastModifiedByType: User
 type: Microsoft.App/containerApps

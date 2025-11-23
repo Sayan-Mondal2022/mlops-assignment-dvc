@@ -9,36 +9,41 @@ FROM python:3.10-slim
 WORKDIR /app
 
 # -----------------------------
-# 3. Install system dependencies
+# 3. Set environment variables
 # -----------------------------
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
 
 # -----------------------------
 # 4. Copy requirements first for better caching
 # -----------------------------
-COPY api/requirements.txt /app/requirements.txt
+COPY api/requirements.txt .
 
 # -----------------------------
 # 5. Install Python dependencies
 # -----------------------------
 RUN pip install --upgrade pip && \
-    pip install -r requirements.txt
+    pip install --no-cache-dir -r requirements.txt
 
 # -----------------------------
 # 6. Copy the entire project
 # -----------------------------
 COPY . /app
 COPY models/ ./models/
-
-
-# -----------------------------
-# 7. Expose Flask port
-# -----------------------------
-EXPOSE 5001
+COPY metrics/ ./metrics
 
 # -----------------------------
-# 8. Run the Flask server
+# 7. Configure Streamlit for headless mode
 # -----------------------------
-CMD ["python", "api/app.py"]
+RUN mkdir -p /root/.streamlit
+RUN echo "[server]\nheadless = true\nenableCORS = false\nenableXsrfProtection = false\nport = 8501" > /root/.streamlit/config.toml
+
+# -----------------------------
+# 8. Expose Streamlit port
+# -----------------------------
+EXPOSE 8501
+
+# -----------------------------
+# 9. Run Streamlit app
+# -----------------------------
+CMD ["streamlit", "run", "api/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
