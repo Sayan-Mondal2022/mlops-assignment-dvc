@@ -1,9 +1,9 @@
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import xgboost as xgb
-import lightgbm as lgb
 import yaml
 import joblib
 import json
@@ -29,8 +29,8 @@ def get_model(model_name, config):
     elif model_name == "xgboost":
         return xgb.XGBRegressor(**model_config)
     
-    elif model_name == "lightgbm":
-        return lgb.LGBMRegressor(**model_config)
+    elif model_name == "linear_regression":
+        return LinearRegression(**model_config)
     
     else:
         raise ValueError(f"Unknown model: {model_name}")

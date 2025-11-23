@@ -10,7 +10,7 @@ class CPUPredictor:
         self.label_encoder = None
         self.feature_names = ['cpu_request', 'mem_request', 'cpu_limit', 'mem_limit', 'runtime_minutes', 'controller_kind']
         self.models_loaded = False
-        self.models_dir = models_dir  # Make models directory configurable
+        self.models_dir = models_dir
         
     def load_models(self):
         """Load all trained models and preprocessing objects from configured models directory"""
@@ -45,10 +45,10 @@ class CPUPredictor:
                 print(f"❌ Label encoder file not found: {label_encoder_path}")
                 return False
             
-            # Load models
+            # Load models - REPLACED LightGBM with Linear Regression
             model_files = {
                 'XGBoost': os.path.join(base_path, 'xgboost_model.pkl'),
-                'LightGBM': os.path.join(base_path, 'lightgbm_model.pkl'), 
+                'Linear Regression': os.path.join(base_path, 'linear_regression_model.pkl'), 
                 'Random Forest': os.path.join(base_path, 'random_forest_model.pkl')
             }
             
@@ -152,10 +152,10 @@ def safe_predict_wrapper(predictor, data):
     """Wrapper to match your original predict_all method signature"""
     predictions = predictor.predict_all(data)
     if predictions:
-        # Convert to your original format
+        # Convert to your original format - UPDATED to include Linear Regression
         return {
-            "lightgbm": predictions.get("LightGBM"),
+            "linear_regression": predictions.get("Linear Regression"),
             "random_forest": predictions.get("Random Forest"), 
             "xgboost": predictions.get("XGBoost")
         }
-    return {"lightgbm": None, "random_forest": None, "xgboost": None}
+    return {"linear_regression": None, "random_forest": None, "xgboost": None}

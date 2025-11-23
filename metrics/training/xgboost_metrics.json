@@ -1,19 +1,19 @@
 [
   {
     "model": "xgboost",
-    "training_time_seconds": 1.4763598442077637,
-    "mae": 0.0044367550297783965,
-    "mse": 0.00027857634566833597,
-    "rmse": 0.01669060650990059,
-    "r2": 0.8825145436570054,
-    "mape": 2341.319872568411,
+    "training_time_seconds": 14.037236213684082,
+    "mae": 0.004186632595979536,
+    "mse": 0.0002162535952163837,
+    "rmse": 0.014705563410369006,
+    "r2": 0.9087982425110193,
+    "mape": 2549.9873823963844,
     "parameters": {
-      "n_estimators": 100,
-      "max_depth": 6,
-      "learning_rate": 0.1,
-      "subsample": 0.8,
       "colsample_bytree": 0.8,
-      "random_state": 42
+      "learning_rate": 0.1,
+      "max_depth": 6,
+      "n_estimators": 100,
+      "random_state": 42,
+      "subsample": 0.8
     }
   }
 ]

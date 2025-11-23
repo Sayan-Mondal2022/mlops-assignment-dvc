@@ -6,7 +6,7 @@ def save_final_comparison():
     """Save the final comparison results"""
     
     # Load all individual model metrics
-    models = ['xgboost', 'lightgbm', 'random_forest']
+    models = ['xgboost', 'linear_regression', 'random_forest']
     all_metrics = {}
     
     for model in models:

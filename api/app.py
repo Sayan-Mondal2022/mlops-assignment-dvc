@@ -133,8 +133,9 @@ def load_predictor():
 # Load metrics helper functions with CORRECTED PATHS
 def load_model_metrics():
     """Load metrics for all models"""
+    # UPDATED: Replaced lightgbm with linear_regression
     metrics_paths = {
-        "lightgbm": f"{METRICS_DIR}/evaluation/lightgbm_evaluation.json",
+        "linear_regression": f"{METRICS_DIR}/evaluation/linear_regression_evaluation.json",
         "random_forest": f"{METRICS_DIR}/evaluation/random_forest_evaluation.json", 
         "xgboost": f"{METRICS_DIR}/evaluation/xgboost_evaluation.json"
     }
@@ -339,7 +340,8 @@ def show_dashboard():
     st.subheader("🤖 Individual Model Performance")
     
     col1, col2, col3 = st.columns(3)
-    models = ["lightgbm", "random_forest", "xgboost"]
+    # UPDATED: Replaced lightgbm with linear_regression
+    models = ["linear_regression", "random_forest", "xgboost"]
     columns = [col1, col2, col3]
     
     for i, model_name in enumerate(models):
@@ -395,16 +397,14 @@ def show_dashboard():
         Go to the **Predict CPU Usage** page to get real-time predictions from all models.
         """)
 
-# [Rest of your show_model_details() and show_prediction() functions remain the same]
-# Just update the paths in show_model_details():
-
 def show_model_details():
     """Display individual model details"""
     st.title("🔍 Model Details")
     
+    # UPDATED: Replaced lightgbm with linear_regression
     model_name = st.selectbox(
         "Select a model to view details",
-        ["lightgbm", "random_forest", "xgboost"]
+        ["linear_regression", "random_forest", "xgboost"]
     )
     
     st.subheader(f"{model_name.upper().replace('_', ' ')} Model")
@@ -501,8 +501,6 @@ def show_model_details():
     if plots_found == 0:
         st.info("ℹ️ No visualization plots available for this model")
 
-# [Keep your existing show_prediction function as is]
-
 def show_prediction(predictor):
     """Display prediction interface"""
     st.title("🔮 Predict CPU Usage")
@@ -568,8 +566,9 @@ def show_prediction(predictor):
                         st.subheader("🤖 Individual Model Predictions")
                         pred_cols = st.columns(3)
                         
+                        # UPDATED: Replaced LightGBM with Linear Regression
                         model_names = {
-                            "LightGBM": predictions.get("LightGBM"),
+                            "Linear Regression": predictions.get("Linear Regression"),
                             "Random Forest": predictions.get("Random Forest"),
                             "XGBoost": predictions.get("XGBoost")
                         }

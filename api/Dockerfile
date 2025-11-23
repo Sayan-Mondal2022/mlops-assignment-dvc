@@ -1,7 +1,7 @@
 # -----------------------------
 # 1. Base Python image
 # -----------------------------
-FROM python:3.10-slim
+FROM python:3.11-slim
 
 WORKDIR /app
 
@@ -11,16 +11,16 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # -----------------------------
 # Install dependencies
 # -----------------------------
-COPY api/requirements.txt .
+COPY api/requirements.txt /app/requirements.txt
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
 # -----------------------------
 # Copy application files
 # -----------------------------
-COPY . /app/api
-COPY ../models /app/models
-COPY ../metrics /app/metrics
+COPY . /app
+COPY models /app/models
+COPY metrics /app/metrics
 
 # -----------------------------
 # Streamlit config

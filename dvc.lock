@@ -10,8 +10,8 @@ stages:
       isexec: true
     - path: src/data_preprocessing.py
       hash: md5
-      md5: f64811c8913608e677e24ff2b1ea2af5
-      size: 3299
+      md5: 784788714f040c729b30f4f97ec2be1c
+      size: 4444
       isexec: true
     params:
       params.yaml:
@@ -34,31 +34,31 @@ stages:
     outs:
     - path: data/processed/processed_data.pkl
       hash: md5
-      md5: b93a7dcbbaa31c90d60ed06f0d55565b
-      size: 15906655
+      md5: e74129e577402c957087ff947e7b1f7f
+      size: 15906812
       isexec: true
     - path: models/label_encoder.pkl
       hash: md5
-      md5: d7d2db561f29d2326035862459663e00
-      size: 485
+      md5: 6c6afed534f3146fffa15d65f28c5b33
+      size: 528
       isexec: true
     - path: models/scaler.pkl
       hash: md5
-      md5: 5e6a5bec1cb38d2b84e28309c392d251
-      size: 1039
+      md5: bbff6477f849b0dd5b11295abf8a76d9
+      size: 1103
       isexec: true
   train:
     cmd: python src/training.py
     deps:
     - path: data/processed/processed_data.pkl
       hash: md5
-      md5: b93a7dcbbaa31c90d60ed06f0d55565b
-      size: 15906655
+      md5: e74129e577402c957087ff947e7b1f7f
+      size: 15906812
       isexec: true
     - path: src/training.py
       hash: md5
-      md5: e73fc33d2df1b496c337d6398c370b37
-      size: 4793
+      md5: 427d755a7bcc9be37ca31ed45f35dd3e
+      size: 4828
       isexec: true
     params:
       params.yaml:
@@ -74,15 +74,12 @@ stages:
           raw_path: data/raw/raw.csv
           target: cpu_usage
         model:
-          lightgbm:
-            colsample_bytree: 0.8
-            learning_rate: 0.05
-            max_depth: 8
-            n_estimators: 100
-            num_leaves: 31
-            random_state: 42
-            subsample: 0.8
-          name: lightgbm
+          linear_regression:
+            copy_X: true
+            fit_intercept: true
+            n_jobs:
+            positive: false
+          name: xgboost
           random_forest:
             max_depth: 15
             min_samples_leaf: 1
@@ -97,15 +94,15 @@ stages:
             random_state: 42
             subsample: 0.8
     outs:
-    - path: metrics/training/lightgbm_metrics.json
+    - path: metrics/training/xgboost_metrics.json
       hash: md5
-      md5: c0c5715ae8ae144e56b52372cc5df6b2
-      size: 457
+      md5: 2b3d6e25928256e08fa5593ed41742e8
+      size: 430
       isexec: true
-    - path: models/lightgbm_model.pkl
+    - path: models/xgboost_model.pkl
       hash: md5
-      md5: 47934351f2520e1d007c72521e4145e1
-      size: 313078
+      md5: fe3bc2fd35874196f15904c8c668e76b
+      size: 543153
       isexec: true
   evaluate:
     cmd: python src/evaluation.py

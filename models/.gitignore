@@ -4,3 +4,4 @@
 /random_forest_model.pkl
 /lightgbm_model.pkl
 /cpu
+/linear_regression_model.pkl

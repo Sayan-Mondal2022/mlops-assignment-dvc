@@ -34,6 +34,7 @@ aml_runs/
 !models/**/*.dvc
 
 # Ignore DVC cache (huge)
+.dvc
 .dvc/cache/
 .dvc/tmp/
 
@@ -41,3 +42,12 @@ aml_runs/
 # DO NOT COPY .git into the image
 # -----------------------------
 .git/
+
+.gitignore
+deploy.sh
+dvc.lock
+dvc.yaml
+params.yaml
+README.me
+.dvcignore
+.dockerignore

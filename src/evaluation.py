@@ -113,12 +113,55 @@ def create_plots(y_test, y_pred, X_test, model_name, model):
     plt.tight_layout()
     plt.savefig(f'metrics/plots/{model_name}/distribution_comparison.png', dpi=300, bbox_inches='tight')
     plt.close()
-
+    
 def create_feature_importance_plot(model, X_test, model_name):
     """Create feature importance plot for the model"""
     
-    # Check if model has feature_importances_ attribute
-    if hasattr(model, 'feature_importances_'):
+    # For Linear Regression, show coefficients with signs
+    if model_name == 'linear_regression' and hasattr(model, 'coef_'):
+        coefficients = model.coef_
+        feature_names = X_test.columns
+        
+        # Create DataFrame for sorting by absolute value but keeping sign
+        coef_df = pd.DataFrame({
+            'feature': feature_names,
+            'coefficient': coefficients,
+            'abs_value': np.abs(coefficients)
+        }).sort_values('abs_value', ascending=True)
+        
+        # Plot coefficients with colors based on sign
+        plt.figure(figsize=(12, 8))
+        
+        colors = ['red' if x < 0 else 'green' for x in coef_df['coefficient']]
+        bars = plt.barh(coef_df['feature'], coef_df['coefficient'], 
+                color=colors, edgecolor='black', alpha=0.7)
+        
+        plt.xlabel('Coefficient Value', fontsize=12)
+        plt.ylabel('Features', fontsize=12)
+        plt.title(f'{model_name.upper()} - Feature Coefficients\n(Green=Positive, Red=Negative)', fontsize=14, fontweight='bold')
+        plt.grid(True, alpha=0.3, axis='x')
+        plt.axvline(x=0, color='black', linestyle='-', alpha=0.8)
+        
+        # Add value labels on bars
+        for i, v in enumerate(coef_df['coefficient']):
+            plt.text(v + (0.001 if v >= 0 else -0.01), i, f'{v:.4f}', 
+                    va='center', fontsize=9, 
+                    color='white' if abs(v) > np.max(np.abs(coef_df['coefficient'])) * 0.3 else 'black')
+        
+        plt.tight_layout()
+        plt.savefig(f'metrics/plots/{model_name}/feature_importance.png', dpi=300, bbox_inches='tight')
+        plt.close()
+        
+        print(f"📊 Feature coefficients plot created for {model_name}")
+        
+        # Save coefficients data to JSON
+        coef_dict = coef_df.set_index('feature')['coefficient'].to_dict()
+        os.makedirs('metrics/feature_importance', exist_ok=True)
+        with open(f'metrics/feature_importance/{model_name}_feature_importance.json', 'w') as f:
+            json.dump(coef_dict, f, indent=2)
+    
+    # For tree-based models with feature_importances_
+    elif hasattr(model, 'feature_importances_'):
         # Get feature importance
         feature_importance = model.feature_importances_
         feature_names = X_test.columns
@@ -158,7 +201,7 @@ def create_feature_importance_plot(model, X_test, model_name):
             json.dump(importance_dict, f, indent=2)
             
     else:
-        print(f"⚠️  {model_name} doesn't have feature_importances_ attribute")
+        print(f"⚠️  {model_name} doesn't have feature_importances_ or coefficients attribute")
         
         # For models without feature_importance, create a placeholder message
         plt.figure(figsize=(10, 6))
@@ -171,7 +214,7 @@ def create_feature_importance_plot(model, X_test, model_name):
 
 def evaluate_all_models():
     """Evaluate all available models and create comparison"""
-    models_to_evaluate = ['xgboost', 'lightgbm', 'random_forest']
+    models_to_evaluate = ['linear_regression', 'xgboost', 'lightgbm', 'random_forest']
     all_metrics = {}
     
     print("🧪 Evaluating all models...")
@@ -201,6 +244,8 @@ def evaluate_all_models():
             config['model']['name'] = original_model
             with open('params.yaml', 'w') as f:
                 yaml.dump(config, f)
+        else:
+            print(f"⚠️  Model not found: {model_path}")
     
     # Create comparison report if we have multiple models
     if len(all_metrics) > 1:
@@ -208,6 +253,7 @@ def evaluate_all_models():
     
     return all_metrics
 
+    
 def create_comparison_report(all_metrics):
     """Create a comparison report for all models"""
     metrics_df = pd.DataFrame(all_metrics).T

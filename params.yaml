@@ -10,15 +10,12 @@ data:
   raw_path: data/raw/raw.csv
   target: cpu_usage
 model:
-  lightgbm:
-    colsample_bytree: 0.8
-    learning_rate: 0.05
-    max_depth: 8
-    n_estimators: 100
-    num_leaves: 31
-    random_state: 42
-    subsample: 0.8
-  name: lightgbm
+  linear_regression:
+    copy_X: true
+    fit_intercept: true
+    n_jobs: null
+    positive: false
+  name: random_forest
   random_forest:
     max_depth: 15
     min_samples_leaf: 1
