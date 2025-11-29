@@ -93,7 +93,7 @@ mlops-assignment-dvc/
 - Python 3.x  
 - Docker  
 - DVC  
-- Azure CLI (for deployment)  
+- Azure CLI (for deployment)
 
 ### Local Setup  
 1. Clone the repository:  
@@ -157,6 +157,7 @@ Model evaluation metrics are tracked via DVC and include:
 Below is the general workflow followed to deploy the ML model using Azure ML, Docker, and Azure Container Apps.
 
 ### Either run:
+Edit the starting details with your own details after creating a Azure ML Resource group and then run the below given command.
 ```bash
 ./deploy.sh
 ```
@@ -231,6 +232,16 @@ az containerapp logs show \
   --resource-group <resource-group> \
   --revision <revision-name> \
   --follow
+```
+
+### **9️⃣ View the deployed URL Link**
+To get the final URL link
+```bash
+az containerapp show \
+  --name <container-app-name> \
+  --resource-group <resource-group-name> \
+  --query properties.configuration.ingress.fqdn \
+  -o tsv
 ```
 
 ### **✔️ Deployment Complete**
